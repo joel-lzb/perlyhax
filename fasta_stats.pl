@@ -28,12 +28,14 @@ print "ID\tLENGTH\tNs\n"; #print header
 while (<MYINFILE>) {
 	chomp; 
 	if (/^>(\S+)\s*(.*)$/) { #found description line
-		print "$id\t$length\t$n_count\n" if $length > 0; 
-		push  @sortArray, $length;
-		$totalseq = $totalseq+1; 
-		$id = $_; #or use $id=$1; 
-		$length = 0;
-		$n_count = 0;
+		if ($length > 0) {
+			print "$id\t$length\t$n_count\n"; 
+			push  @sortArray, $length;
+			$totalseq = $totalseq+1; 
+			$length = 0;
+			$n_count = 0;
+		}
+		$id = $_; #or use $id=$1;
 	} else { 
 		$length += length; 
 		$total_length += length; 
@@ -49,6 +51,7 @@ while (<MYINFILE>) {
 
 print "$id\t$length\t$n_count\n\n" if $length > 0; # final entry
 push  @sortArray, $length;
+$totalseq = $totalseq+1;
 
 $average_length = $total_length/$totalseq; 
 
@@ -72,5 +75,7 @@ print "Total length: $total_length\n";
 print "Total N found: $n_total\n"; 
 print "Total Number of sequences: $totalseq\n"; 
 print "Average length of sequences: $average_length\n"; 
+print "Maximum length of sequences: $sortArray[0]\n";
+print "Minimum length of sequences: $sortArray[$#sortArray]\n";
 print "N50: $N50\n"; 
 print "N90: $N90\n"; 
